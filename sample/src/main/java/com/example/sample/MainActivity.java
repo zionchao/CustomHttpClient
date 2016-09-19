@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
+import com.kevin.http.AppException;
 import com.kevin.http.FileCallback;
 import com.kevin.http.JsonCallback;
 import com.kevin.http.Request;
@@ -40,7 +41,7 @@ public class  MainActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailuer(Exception error) {
+            public void onFailuer(AppException error) {
                 tvResult.setText("失败---"+error.getMessage().toString());
                 Log.e("hehe",error.getMessage());
             }
@@ -60,18 +61,24 @@ public class  MainActivity extends AppCompatActivity {
         request.headers.put("Content-Type","application/json");
         request.setCallback(new FileCallback() {
             @Override
+            public void onProgressUpdata(int curLen, int totalLen) {
+                Log.e("hehe",curLen+"："+totalLen);
+            }
+
+            @Override
             public void onSuccess(String result) {
                 tvResult.setText("成功---"+result.toString());
                 Log.e("hehe",result.toString());
             }
 
             @Override
-            public void onFailuer(Exception error) {
+            public void onFailuer(AppException error) {
                 tvResult.setText("失败---"+error.getMessage().toString());
                 Log.e("hehe",error.getMessage());
             }
         }.setCachePath("/sdcard/demo.txt"));
         request.content=content;
+        request.enableProgressUpdate(true);
         RequestTask task=new RequestTask(request);
         task.execute();
     }

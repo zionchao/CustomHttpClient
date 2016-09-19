@@ -24,19 +24,33 @@ public class RequestTask extends AsyncTask {
     protected Object doInBackground(Object[] params) {
         try {
             HttpURLConnection connection= HttpUrlConnectionUtil.exec(request);
-            return request.iCallback.parseResponse(connection);
-        } catch (Exception e) {
-            e.printStackTrace();
+            if (request.enableProgressUpdate)
+            {
+                return request.iCallback.parseResponse(connection,new OnProgressUpdateListener(){
+                    @Override
+                    public void onProgressUpdate(int curLen, int totalLen) {
+                        publishProgress(curLen,totalLen);
+                    }
+                });
+            }else
+               return request.iCallback.parseResponse(connection);
+
+        } catch (AppException e) {
+            return e;
         }
-        return null;
+    }
+
+    @Override
+    protected void onProgressUpdate(Object[] values) {
+        request.iCallback.onProgressUpdata((int)values[0],(int)values[1]);
     }
 
     @Override
     protected void onPostExecute(Object o) {
         super.onPostExecute(o);
-        if (o instanceof Exception)
-            request.iCallback.onFailuer((Exception) o);
+        if (o instanceof AppException)
+            request.iCallback.onFailuer((AppException) o);
         else
-            request.iCallback.onSuccess( o);
+            request.iCallback.onSuccess(o);
     }
 }

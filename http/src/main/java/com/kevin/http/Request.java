@@ -8,6 +8,11 @@ import java.util.Map;
 public class Request {
 
     public ICallback iCallback;
+    public boolean enableProgressUpdate;
+
+    public void enableProgressUpdate(boolean enable) {
+        this.enableProgressUpdate=enable;
+    }
 
     public enum RequestMethod{
         GET,POST,PUT,DELETE
