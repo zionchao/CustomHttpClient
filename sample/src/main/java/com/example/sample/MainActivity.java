@@ -14,7 +14,7 @@ import com.kevin.http.RequestTask;
 
 import java.util.HashMap;
 
-public class  MainActivity extends AppCompatActivity {
+public class  MainActivity extends BaseActivity {
 
     private TextView tvResult;
 
@@ -47,6 +47,7 @@ public class  MainActivity extends AppCompatActivity {
             }
         }.setCachePath("/sdcard/demo.txt"));
         request.content=content;
+        request.setOnGloableListener(this);
         RequestTask task=new RequestTask(request);
         task.execute();
     }

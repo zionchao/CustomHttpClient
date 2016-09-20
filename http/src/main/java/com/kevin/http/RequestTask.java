@@ -22,6 +22,11 @@ public class RequestTask extends AsyncTask {
 
     @Override
     protected Object doInBackground(Object[] params) {
+        return request(0);
+    }
+
+    public Object request(int retryTime)
+    {
         try {
             HttpURLConnection connection= HttpUrlConnectionUtil.exec(request);
             if (request.enableProgressUpdate)
@@ -33,13 +38,19 @@ public class RequestTask extends AsyncTask {
                     }
                 });
             }else
-               return request.iCallback.parseResponse(connection);
+                return request.iCallback.parseResponse(connection);
 
         } catch (AppException e) {
+            if (e.type== AppException.ErrorType.TIMEOUT)
+            {
+                if(retryTime<request.maxRetryTime) {
+                    retryTime++;
+                    return request(retryTime);
+                }
+            }
             return e;
         }
     }
-
     @Override
     protected void onProgressUpdate(Object[] values) {
         request.iCallback.onProgressUpdata((int)values[0],(int)values[1]);
@@ -49,7 +60,13 @@ public class RequestTask extends AsyncTask {
     protected void onPostExecute(Object o) {
         super.onPostExecute(o);
         if (o instanceof AppException)
-            request.iCallback.onFailuer((AppException) o);
+            if(request.onGloableExceptionListener!=null)
+            {
+                if(!request.onGloableExceptionListener.handleException((AppException) o))
+                {
+                    request.iCallback.onFailuer((AppException) o);
+                }
+            }
         else
             request.iCallback.onSuccess(o);
     }

@@ -9,9 +9,22 @@ public class Request {
 
     public ICallback iCallback;
     public boolean enableProgressUpdate;
+    public OnGloableExceptionListener onGloableExceptionListener;
+    public int maxRetryTime=3;
+
+    public int getMaxRetryTime() {
+        return maxRetryTime;
+    }
+    public void setMaxRetryTime(int maxRetryTime) {
+        this.maxRetryTime = maxRetryTime;
+    }
 
     public void enableProgressUpdate(boolean enable) {
         this.enableProgressUpdate=enable;
+    }
+
+    public void setOnGloableListener(OnGloableExceptionListener onGloableExptionListener) {
+        this.onGloableExceptionListener=onGloableExptionListener;
     }
 
     public enum RequestMethod{

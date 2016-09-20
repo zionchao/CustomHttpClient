@@ -61,9 +61,9 @@ public abstract class AbstractCallback<T> implements ICallback<T> {
                     return bindData(path);
                 }
             }else
-                throw new AppException(status,connection.getResponseMessage());
+                throw new AppException(AppException.ErrorType.SERVER,status,connection.getResponseMessage());
         } catch (Exception e) {
-            throw new AppException(e.getMessage());
+            throw new AppException(AppException.ErrorType.SERVER,e.getMessage());
         }
     }
 
