@@ -28,7 +28,9 @@ public class RequestTask extends AsyncTask {
     public Object request(int retryTime)
     {
         try {
+            request.checkIsCancle();
             HttpURLConnection connection= HttpUrlConnectionUtil.exec(request);
+            request.checkIsCancle();
             if (request.enableProgressUpdate)
             {
                 return request.iCallback.parseResponse(connection,new OnProgressUpdateListener(){

@@ -11,6 +11,7 @@ public class Request {
     public boolean enableProgressUpdate;
     public OnGloableExceptionListener onGloableExceptionListener;
     public int maxRetryTime=3;
+    public boolean isCancleHttp;
 
     public int getMaxRetryTime() {
         return maxRetryTime;
@@ -25,6 +26,17 @@ public class Request {
 
     public void setOnGloableListener(OnGloableExceptionListener onGloableExptionListener) {
         this.onGloableExceptionListener=onGloableExptionListener;
+    }
+
+    public void checkIsCancle() throws AppException {
+        if (isCancleHttp)
+            throw new AppException(AppException.ErrorType.CANCLE_HTTP,"取消HTTP请求");
+    }
+
+    public void cancle(boolean isCancle)
+    {
+        this.isCancleHttp=isCancle;
+        iCallback.cancle();
     }
 
     public enum RequestMethod{

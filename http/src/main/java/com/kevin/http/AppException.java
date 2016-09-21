@@ -10,7 +10,7 @@ public class AppException extends Exception{
     public String responseMessage;
 
     public enum ErrorType{
-        TIMEOUT,SERVER,JSON,IO,FILE_NOT_FOUND
+        TIMEOUT,SERVER,JSON,IO,FILE_NOT_FOUND,CANCLE_HTTP
     }
 
     public AppException(ErrorType type,String message) {

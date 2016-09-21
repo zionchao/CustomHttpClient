@@ -2,7 +2,6 @@ package com.kevin.http;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 
@@ -13,6 +12,7 @@ public abstract class AbstractCallback<T> implements ICallback<T> {
 
     private Class<T> entityClass;
     private String path;
+    public boolean isCancleHttp;
 
     @Override
     public T parseResponse(HttpURLConnection connection) throws AppException {
@@ -22,6 +22,7 @@ public abstract class AbstractCallback<T> implements ICallback<T> {
     @Override
     public T parseResponse(HttpURLConnection connection,OnProgressUpdateListener listener) throws AppException{
         try {
+            checkIsCancle();
             int status =connection.getResponseCode();
             if (status>=200&&status<400)
             {
@@ -34,6 +35,7 @@ public abstract class AbstractCallback<T> implements ICallback<T> {
                     while ((len=is.read(buffer))!=-1)
                     {
                         out.write(buffer,0,len);
+                        checkIsCancle();
                     }
                     is.close();
                     out.flush();
@@ -50,6 +52,7 @@ public abstract class AbstractCallback<T> implements ICallback<T> {
                     int curLen=0;
                     while ((len=is.read(buffer))!=-1)
                     {
+                        checkIsCancle();
                         out.write(buffer,0,len);
                         curLen=curLen+len;
                         if (listener!=null)
@@ -58,6 +61,7 @@ public abstract class AbstractCallback<T> implements ICallback<T> {
                     is.close();
                     out.flush();
                     out.close();
+                    checkIsCancle();
                     return bindData(path);
                 }
             }else
@@ -78,5 +82,15 @@ public abstract class AbstractCallback<T> implements ICallback<T> {
     public ICallback setCachePath(String path) {
         this.path=path;
         return this;
+    }
+
+    public void checkIsCancle() throws AppException {
+        if (isCancleHttp)
+            throw new AppException(AppException.ErrorType.CANCLE_HTTP,"取消HTTP请求");
+    }
+
+    @Override
+    public void cancle() {
+        isCancleHttp=true;
     }
 }

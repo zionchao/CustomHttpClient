@@ -1,7 +1,6 @@
 package com.example.sample;
 
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
@@ -56,7 +55,7 @@ public class  MainActivity extends BaseActivity {
     {
         tvResult.setText("");
         String url="http://117.169.64.125:8380/admin/spi/getTasks.spi"; //jx
-//        String content="{\"sn\":\"005801FF0031082003EA08A5C80B4B11\",\"taskCodes\":[]}";
+//      String content="{\"sn\":\"005801FF0031082003EA08A5C80B4B11\",\"taskCodes\":[]}";
         String content="{\"sn\":\"0CC655CED6D3\",\"taskCodes\":[]}";
 
         Request request=new Request(url, Request.RequestMethod.POST);
