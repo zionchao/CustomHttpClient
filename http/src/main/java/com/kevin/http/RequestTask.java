@@ -22,21 +22,52 @@ public class RequestTask extends AsyncTask {
 
     @Override
     protected Object doInBackground(Object[] params) {
+        return request(0);
+    }
+
+    public Object request(int retryTime)
+    {
         try {
             HttpURLConnection connection= HttpUrlConnectionUtil.exec(request);
-            return request.iCallback.parseResponse(connection);
-        } catch (Exception e) {
-            e.printStackTrace();
+            if (request.enableProgressUpdate)
+            {
+                return request.iCallback.parseResponse(connection,new OnProgressUpdateListener(){
+                    @Override
+                    public void onProgressUpdate(int curLen, int totalLen) {
+                        publishProgress(curLen,totalLen);
+                    }
+                });
+            }else
+                return request.iCallback.parseResponse(connection);
+
+        } catch (AppException e) {
+            if (e.type== AppException.ErrorType.TIMEOUT)
+            {
+                if(retryTime<request.maxRetryTime) {
+                    retryTime++;
+                    return request(retryTime);
+                }
+            }
+            return e;
         }
-        return null;
+    }
+    @Override
+    protected void onProgressUpdate(Object[] values) {
+        request.iCallback.onProgressUpdata((int)values[0],(int)values[1]);
     }
 
     @Override
     protected void onPostExecute(Object o) {
         super.onPostExecute(o);
-        if (o instanceof Exception)
-            request.iCallback.onFailuer((Exception) o);
+        if (o instanceof AppException)
+            if(request.onGloableExceptionListener!=null)
+            {
+                if(!request.onGloableExceptionListener.handleException((AppException) o))
+                {
+                    request.iCallback.onFailuer((AppException) o);
+                }
+            }
         else
-            request.iCallback.onSuccess( o);
+            request.iCallback.onSuccess(o);
     }
 }
