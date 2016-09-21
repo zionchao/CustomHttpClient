@@ -3,12 +3,14 @@ package com.example.sample;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.kevin.http.AppException;
 import com.kevin.http.FileCallback;
 import com.kevin.http.JsonCallback;
 import com.kevin.http.Request;
+import com.kevin.http.RequestManager;
 import com.kevin.http.RequestTask;
 
 import java.util.HashMap;
@@ -16,12 +18,63 @@ import java.util.HashMap;
 public class  MainActivity extends BaseActivity {
 
     private TextView tvResult;
+    private Button click;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         tvResult= (TextView) findViewById(R.id.result);
+        click= (Button) findViewById(R.id.click);
+        click.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                clickDownload();
+            }
+        });
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        RequestManager.getInstance().cancleRequest(toString());
+    }
+
+    private void clickDownload() {
+
+        tvResult.setText("");
+        String url="http://img3.imgtn.bdimg.com/it/u=2571219862,1253096831&fm=11&gp=0.jpg"; //jx
+//      String content="{\"sn\":\"005801FF0031082003EA08A5C80B4B11\",\"taskCodes\":[]}";
+//        String content="{\"sn\":\"0CC655CED6D3\",\"taskCodes\":[]}";
+
+        final Request request=new Request(url);
+        request.headers=new HashMap<String, String>();
+//        request.headers.put("Content-Type","application/json");
+        request.setCallback(new FileCallback() {
+            @Override
+            public void onProgressUpdata(int curLen, int totalLen) {
+                Log.e("hehe",curLen+"："+totalLen);
+                if(curLen*100L/totalLen>50)
+                {
+                    request.cancle(true);
+                }
+            }
+
+            @Override
+            public void onSuccess(String result) {
+                tvResult.setText("成功---"+result.toString());
+                Log.e("hehe",result.toString());
+            }
+
+            @Override
+            public void onFailuer(AppException error) {
+                tvResult.setText("失败---"+error.getMessage().toString());
+                Log.e("hehe",error.getMessage());
+            }
+        }.setCachePath("/sdcard/demo.txt"));
+        request.enableProgressUpdate(true);
+        RequestTask task=new RequestTask(request);
+        task.execute();
     }
 
     public void clickMe(View view)
@@ -81,7 +134,7 @@ public class  MainActivity extends BaseActivity {
         }.setCachePath("/sdcard/demo.txt"));
         request.content=content;
         request.enableProgressUpdate(true);
-        RequestTask task=new RequestTask(request);
-        task.execute();
+        request.setTag(toString());
+        RequestManager.getInstance().performRequest(request);
     }
 }

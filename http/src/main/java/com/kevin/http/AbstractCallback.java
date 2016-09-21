@@ -12,7 +12,7 @@ public abstract class AbstractCallback<T> implements ICallback<T> {
 
     private Class<T> entityClass;
     private String path;
-    public boolean isCancleHttp;
+    public volatile boolean isCancleHttp;
 
     @Override
     public T parseResponse(HttpURLConnection connection) throws AppException {
@@ -34,8 +34,8 @@ public abstract class AbstractCallback<T> implements ICallback<T> {
                     int len;
                     while ((len=is.read(buffer))!=-1)
                     {
-                        out.write(buffer,0,len);
                         checkIsCancle();
+                        out.write(buffer,0,len);
                     }
                     is.close();
                     out.flush();
@@ -46,7 +46,7 @@ public abstract class AbstractCallback<T> implements ICallback<T> {
                 {
                     FileOutputStream out=new FileOutputStream(path);
                     InputStream is=connection.getInputStream();
-                    byte[]buffer=new byte[2048];
+                    byte[]buffer=new byte[1024];
                     int len;
                     int totalLen=connection.getContentLength();
                     int curLen=0;

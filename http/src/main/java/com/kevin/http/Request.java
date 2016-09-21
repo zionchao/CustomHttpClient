@@ -12,6 +12,7 @@ public class Request {
     public OnGloableExceptionListener onGloableExceptionListener;
     public int maxRetryTime=3;
     public boolean isCancleHttp;
+    public String tag;
 
     public int getMaxRetryTime() {
         return maxRetryTime;
@@ -36,7 +37,11 @@ public class Request {
     public void cancle(boolean isCancle)
     {
         this.isCancleHttp=isCancle;
-        iCallback.cancle();
+        this.iCallback.cancle();
+    }
+
+    public void setTag(String tag) {
+        this.tag = tag;
     }
 
     public enum RequestMethod{
