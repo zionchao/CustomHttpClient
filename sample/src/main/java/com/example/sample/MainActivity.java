@@ -53,8 +53,10 @@ public class  MainActivity extends AppCompatActivity {
     public void clickFile(View view)
     {
         tvResult.setText("");
-        String url="http://117.185.122.131:8380/admin/spi/getTasks.spi";
-        String content="{\"sn\":\"005801FF0031082003EA08A5C80B4B11\",\"taskCodes\":[]}";
+        String url="http://117.169.64.125:8380/admin/spi/getTasks.spi"; //jx
+//        String content="{\"sn\":\"005801FF0031082003EA08A5C80B4B11\",\"taskCodes\":[]}";
+        String content="{\"sn\":\"0CC655CED6D3\",\"taskCodes\":[]}";
+
         Request request=new Request(url, Request.RequestMethod.POST);
         request.headers=new HashMap<String, String>();
         request.headers.put("Content-Type","application/json");
