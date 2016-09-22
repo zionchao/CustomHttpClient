@@ -1,13 +1,14 @@
 package com.kevin.http;
 
-import android.os.AsyncTask;
-
 import java.net.HttpURLConnection;
+import java.util.Objects;
+
+import static android.icu.lang.UCharacter.GraphemeClusterBreak.T;
 
 /**
  * Created by ZhangChao on 2016/9/18.
  */
-public class RequestTask extends AsyncTask {
+public class RequestTask extends MyAsyncTask {
 
     private Request request;
 
@@ -22,6 +23,15 @@ public class RequestTask extends AsyncTask {
 
     @Override
     protected Object doInBackground(Object[] params) {
+        if (this.request.iCallback!=null)
+        {
+            Object o=request.iCallback.onPreRequest();
+            if (o!=null)
+            {
+//                preRequestListener.perRequest(o);
+                return o;
+            }
+        }
         return request(0);
     }
 
@@ -59,9 +69,14 @@ public class RequestTask extends AsyncTask {
     }
 
     @Override
+    protected void onCancelled() {
+        super.onCancelled();
+    }
+
+    @Override
     protected void onPostExecute(Object o) {
-        super.onPostExecute(o);
-        if (o instanceof AppException)
+//        super.onPostExecute(o);
+        if (o instanceof AppException){
             if(request.onGloableExceptionListener!=null)
             {
                 if(!request.onGloableExceptionListener.handleException((AppException) o))
@@ -69,7 +84,10 @@ public class RequestTask extends AsyncTask {
                     request.iCallback.onFailuer((AppException) o);
                 }
             }
+        }
         else
             request.iCallback.onSuccess(o);
+
+
     }
 }

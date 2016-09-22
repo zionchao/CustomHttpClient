@@ -15,6 +15,8 @@ import com.kevin.http.RequestTask;
 
 import java.util.HashMap;
 
+import static com.example.sample.R.id.result;
+
 public class  MainActivity extends BaseActivity {
 
     private TextView tvResult;
@@ -24,12 +26,13 @@ public class  MainActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        tvResult= (TextView) findViewById(R.id.result);
+        tvResult= (TextView) findViewById(result);
         click= (Button) findViewById(R.id.click);
         click.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                clickDownload();
+//                clickDownload();
+                clickMe();
             }
         });
     }
@@ -77,15 +80,28 @@ public class  MainActivity extends BaseActivity {
         task.execute();
     }
 
-    public void clickMe(View view)
+    public void clickMe()
     {
         tvResult.setText("");
         String url="http://117.185.122.131:8380/admin/spi/getTasks.spi";
         String content="{\"sn\":\"005801FF0031082003EA08A5C80B4B11\",\"taskCodes\":[]}";
         Request request=new Request(url, Request.RequestMethod.POST);
-        request.headers=new HashMap<String, String>();
+        request.headers=new HashMap<>();
         request.headers.put("Content-Type","application/json");
         request.setCallback(new JsonCallback<ResultGetTask>() {
+
+            @Override
+            public ResultGetTask onPreRequest() {
+                // TODO fetch data from db
+                return super.onPreRequest();
+            }
+
+            @Override
+            public ResultGetTask onPostRequest(ResultGetTask resultGetTask) {
+                Log.e("hehe",resultGetTask.getData().get(0).getScenesName());
+                return resultGetTask;
+            }
+
             @Override
             public void onSuccess(ResultGetTask result) {
                 tvResult.setText("成功---"+result.toString());
@@ -97,11 +113,10 @@ public class  MainActivity extends BaseActivity {
                 tvResult.setText("失败---"+error.getMessage().toString());
                 Log.e("hehe",error.getMessage());
             }
-        }.setCachePath("/sdcard/demo.txt"));
+        });
         request.content=content;
         request.setOnGloableListener(this);
-        RequestTask task=new RequestTask(request);
-        task.execute();
+        RequestManager.getInstance().performRequest(request);
     }
 
     public void clickFile(View view)

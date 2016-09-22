@@ -41,7 +41,8 @@ public abstract class AbstractCallback<T> implements ICallback<T> {
                     out.flush();
                     out.close();
                     String result= new String(out.toByteArray());
-                    return bindData(result);
+                    T t=onPostRequest(bindData(result));
+                    return t;
                 }else
                 {
                     FileOutputStream out=new FileOutputStream(path);
@@ -62,7 +63,8 @@ public abstract class AbstractCallback<T> implements ICallback<T> {
                     out.flush();
                     out.close();
                     checkIsCancle();
-                    return bindData(path);
+                    T t=onPostRequest(bindData(path));
+                    return t;
                 }
             }else
                 throw new AppException(AppException.ErrorType.SERVER,status,connection.getResponseMessage());
@@ -71,6 +73,15 @@ public abstract class AbstractCallback<T> implements ICallback<T> {
         }
     }
 
+    @Override
+    public T onPostRequest(T t) {
+        return t;
+    }
+
+    @Override
+    public T onPreRequest() {
+        return null;
+    }
 
     @Override
     public void onProgressUpdata(int value, int value1) {
