@@ -1,6 +1,7 @@
 package com.kevin.http;
 
 import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -88,7 +89,7 @@ public abstract class AbstractCallback<T> implements ICallback<T> {
 
     }
 
-    protected abstract T bindData(String result);
+    protected abstract T bindData(String result) throws FileNotFoundException, AppException;
 
     public ICallback setCachePath(String path) {
         this.path=path;
@@ -103,5 +104,10 @@ public abstract class AbstractCallback<T> implements ICallback<T> {
     @Override
     public void cancle() {
         isCancleHttp=true;
+    }
+
+    @Override
+    public void refreshUI() {
+
     }
 }

@@ -1,12 +1,20 @@
 package com.example.sample;
 
+import android.support.v7.app.AppCompatActivity;
+import android.util.JsonReader;
+
+import com.kevin.http.AppException;
+import com.kevin.http.Entity;
+
+import java.io.IOException;
+
 /**
  * 任务表
  * 
  * @author zhangchao_a
  *
  */
-public class Task {
+public class Task implements Entity{
 	private long taskId;// bigint(20) NOT NULL AUTO_INCREMENT COMMENT '任务ID',  //, unique = true
 	private String taskcode;// varchar(20) NOT NULL COMMENT '任务编号: 日期+编码+序号',
 	private String taskname;// varchar(50) NOT NULL COMMENT '任务名称',
@@ -182,5 +190,26 @@ public class Task {
 
 	public void setTotalNum(int totalNum) {
 		this.totalNum = totalNum;
+	}
+
+	@Override
+	public void readFromJson(JsonReader reader) throws AppException{
+		try {
+			reader.beginObject();
+			while(reader.hasNext())
+			{
+				String name=reader.nextName();
+				if (name.equalsIgnoreCase("taskname"))
+				{
+					taskname=reader.nextString();
+				}else
+				{
+					reader.skipValue();
+				}
+			}
+			reader.endObject();
+		} catch (IOException e) {
+			throw new AppException(AppException.ErrorType.IO,e.getMessage());
+		}
 	}
 }

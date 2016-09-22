@@ -5,6 +5,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.kevin.http.AppException;
 import com.kevin.http.FileCallback;
@@ -94,6 +95,11 @@ public class  MainActivity extends BaseActivity {
             public ResultGetTask onPreRequest() {
                 // TODO fetch data from db
                 return super.onPreRequest();
+            }
+
+            @Override
+            public void refreshUI() {
+                Toast.makeText(MainActivity.this,"hehe",1).show();
             }
 
             @Override

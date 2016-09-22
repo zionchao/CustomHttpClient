@@ -23,5 +23,7 @@ public interface ICallback<T> {
 
     void cancle();
 
+    void refreshUI();
+
 
 }

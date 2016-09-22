@@ -416,6 +416,7 @@ public abstract class MyAsyncTask<Params, Progress, Result> {
     protected void onProgressUpdate(Progress... values) {
     }
 
+
     /**
      * <p>Runs on the UI thread after {@link #cancel(boolean)} is invoked and
      * {@link #doInBackground(Object[])} has finished.</p>
@@ -688,10 +689,25 @@ public abstract class MyAsyncTask<Params, Progress, Result> {
                     result.mTask.onProgressUpdate(result.mData);
                     break;
                 case MESSEAGE_PRE_REQUEST:
-
+                    result.mTask.onPreUpdate();
                     break;
             }
         }
+    }
+
+
+    @WorkerThread
+    protected final void preRequest(Progress... values) {
+        if (!isCancelled()) {
+            getHandler().obtainMessage(MESSEAGE_PRE_REQUEST,
+                    new AsyncTaskResult<Progress>(this, values)).sendToTarget();
+        }
+    }
+
+    @SuppressWarnings({"UnusedDeclaration"})
+    @MainThread
+    protected void onPreUpdate(Progress... values) {
+
     }
 
     private static abstract class WorkerRunnable<Params, Result> implements Callable<Result> {

@@ -1,5 +1,8 @@
 package com.kevin.http;
 
+import android.util.Log;
+import android.widget.Toast;
+
 import java.net.HttpURLConnection;
 import java.util.Objects;
 
@@ -26,13 +29,20 @@ public class RequestTask extends MyAsyncTask {
         if (this.request.iCallback!=null)
         {
             Object o=request.iCallback.onPreRequest();
+            preRequest(o);
             if (o!=null)
             {
 //                preRequestListener.perRequest(o);
-                return o;
+                preRequest(o);
+//                return o;
             }
         }
         return request(0);
+    }
+
+    @Override
+    protected void onPreUpdate(Object[] values) {
+        request.iCallback.refreshUI();
     }
 
     public Object request(int retryTime)
