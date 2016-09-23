@@ -1,5 +1,7 @@
 package com.kevin.http;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Executor;
 
@@ -15,6 +17,9 @@ public class Request {
     public boolean isCancleHttp;
     public String tag;
     public  RequestTask task;
+    public String filePath;
+    public ArrayList<FileEntity> fileEntities;
+
 
     public enum RequestMethod{
         GET,POST,PUT,DELETE
@@ -29,12 +34,14 @@ public class Request {
     {
         this.url=url;
         this.method= RequestMethod.GET;
+        headers=new HashMap<>();
     }
 
     public  Request(String url,RequestMethod method)
     {
         this.url=url;
         this.method=method;
+        headers=new HashMap<>();
     }
 
     public void enableProgressUpdate(boolean enable) {
@@ -72,6 +79,11 @@ public class Request {
     public void setCallback(ICallback iCallback)
     {
         this.iCallback=iCallback;
+    }
+
+    public void addHeader(String key,String value)
+    {
+        headers.put(key,value);
     }
 
 }

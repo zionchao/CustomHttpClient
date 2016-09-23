@@ -55,7 +55,19 @@ public class HttpUrlConnectionUtil {
             addHeader(connection,request.headers);
 
             OutputStream os=connection.getOutputStream();
-            os.write(request.content.getBytes());
+            if (request.filePath!=null)
+            {
+                UploadUtil.upload(os,request.filePath);
+            }else if(request.fileEntities!=null)
+            {
+                UploadUtil.upload(os,request.content,request.fileEntities);
+            }else if (request.content!=null)
+            {
+                os.write(request.content.getBytes());
+            }else
+            {
+                throw new AppException(AppException.ErrorType.MANUAL,"手动输入造成异常");
+            }
             request.checkIsCancle();
             return connection;
         }catch (InterruptedIOException e){

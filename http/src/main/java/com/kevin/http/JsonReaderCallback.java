@@ -2,7 +2,6 @@ package com.kevin.http;
 
 import android.util.JsonReader;
 
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.lang.reflect.ParameterizedType;
 
@@ -21,8 +20,17 @@ public abstract class JsonReaderCallback<T extends Entity> extends AbstractCallb
             ParameterizedType parameterizedType = (ParameterizedType)this.getClass().getGenericSuperclass();
             Class<T> entityClass = (Class<T>) (parameterizedType.getActualTypeArguments()[0]);
             T t=entityClass.newInstance();
-             reader.beginObject();
             t.readFromJson(reader);
+            return t;
+            //reader.beginObject();
+//            while ( reader.hasNext()) {
+//                String name = reader.nextName();
+//                if (name.equals("data")) {
+//                    t.readFromJson(reader);
+//                }else
+//                    reader.skipValue();
+//            }
+
 //            while ( reader.hasNext())
 //            {
 //                String name= reader.nextName();
@@ -41,11 +49,11 @@ public abstract class JsonReaderCallback<T extends Entity> extends AbstractCallb
 //                     reader.endArray();
 //                }
 //            }
-             reader.endObject();
+            // reader.endObject();
 
         } catch (Exception e) {
             throw new AppException(AppException.ErrorType.IO,e.getMessage());
         }
-        return null;
+//        return null;
     }
 }

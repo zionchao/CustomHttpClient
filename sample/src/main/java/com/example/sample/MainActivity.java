@@ -9,7 +9,7 @@ import android.widget.Toast;
 
 import com.kevin.http.AppException;
 import com.kevin.http.FileCallback;
-import com.kevin.http.JsonCallback;
+import com.kevin.http.JsonReaderCallback;
 import com.kevin.http.Request;
 import com.kevin.http.RequestManager;
 import com.kevin.http.RequestTask;
@@ -89,7 +89,7 @@ public class  MainActivity extends BaseActivity {
         Request request=new Request(url, Request.RequestMethod.POST);
         request.headers=new HashMap<>();
         request.headers.put("Content-Type","application/json");
-        request.setCallback(new JsonCallback<ResultGetTask>() {
+        request.setCallback(new JsonReaderCallback<ResultGetTask>() {
 
             @Override
             public ResultGetTask onPreRequest() {
@@ -99,19 +99,19 @@ public class  MainActivity extends BaseActivity {
 
             @Override
             public void refreshUI() {
-                Toast.makeText(MainActivity.this,"hehe",1).show();
+                Toast.makeText(MainActivity.this,"hehe",Toast.LENGTH_LONG).show();
             }
 
             @Override
             public ResultGetTask onPostRequest(ResultGetTask resultGetTask) {
-                Log.e("hehe",resultGetTask.getData().get(0).getScenesName());
+                Log.e("hehe",resultGetTask.getData().get(0).getTaskname());
                 return resultGetTask;
             }
 
             @Override
             public void onSuccess(ResultGetTask result) {
-                tvResult.setText("成功---"+result.toString());
-                Log.e("hehe",result.toString());
+                tvResult.setText("成功---"+result.success+"---name="+result.getData().get(0).getTaskname());
+//                Log.e("hehe",result.toString());
             }
 
             @Override
@@ -119,7 +119,7 @@ public class  MainActivity extends BaseActivity {
                 tvResult.setText("失败---"+error.getMessage().toString());
                 Log.e("hehe",error.getMessage());
             }
-        });
+        }.setCachePath("/sdcard/demo.txt"));
         request.content=content;
         request.setOnGloableListener(this);
         RequestManager.getInstance().performRequest(request);
