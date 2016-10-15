@@ -35,6 +35,7 @@ public class HttpUrlConnectionUtil {
             connection.setRequestMethod(request.method.name());
             connection.setConnectTimeout(15*3000);
             connection.setReadTimeout(15*3000);
+            addHeader(connection,request.headers);
             request.checkIsCancle();
             return connection;
         }catch (InterruptedIOException e){

@@ -93,6 +93,8 @@ public class RequestTask extends MyAsyncTask {
                 {
                     request.iCallback.onFailuer((AppException) o);
                 }
+            }else{
+                request.iCallback.onFailuer((AppException) o);
             }
         }
         else
