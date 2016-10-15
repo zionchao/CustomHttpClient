@@ -57,6 +57,12 @@ public class Request {
             throw new AppException(AppException.ErrorType.CANCLE_HTTP,"取消HTTP请求");
     }
 
+    public void execute()
+    {
+        task=new RequestTask(this);
+        task.execute();
+    }
+
     public void execute(Executor executor){
         task=new RequestTask(this);
         task.executeOnExecutor(executor);

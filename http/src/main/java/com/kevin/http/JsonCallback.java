@@ -12,8 +12,8 @@ public abstract class JsonCallback<T> extends AbstractCallback<T> {
     protected T bindData(String result) {
         Gson gson=new Gson();
         ParameterizedType parameterizedType = (ParameterizedType)this.getClass().getGenericSuperclass();
-        Class<T> entityClass = (Class<T>) (parameterizedType.getActualTypeArguments()[0]);
-        T t=gson.fromJson(result,entityClass);
+//        Class<T> entityClass = (Class<T>) (parameterizedType.getActualTypeArguments()[0]);
+        T t=gson.fromJson(result,parameterizedType.getActualTypeArguments()[0]);
         return t;
     }
 }
