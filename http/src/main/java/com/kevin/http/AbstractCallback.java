@@ -5,6 +5,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.InflaterInputStream;
 
 /**
  * Created by zhangchao_a on 2016/9/19.
@@ -31,6 +33,17 @@ public abstract class AbstractCallback<T> implements ICallback<T> {
                 {
                     ByteArrayOutputStream out=new ByteArrayOutputStream();
                     InputStream is=connection.getInputStream();
+                    String encoding=connection.getContentEncoding();
+                    if(encoding!=null)
+                    {
+                        if (encoding.equalsIgnoreCase("gzip"))
+                        {
+                            is=new GZIPInputStream(is);
+                        }else if (encoding.equalsIgnoreCase("deflate"))
+                        {
+                            is=new InflaterInputStream(is);
+                        }
+                    }
                     byte[]buffer=new byte[2048];
                     int len;
                     while ((len=is.read(buffer))!=-1)

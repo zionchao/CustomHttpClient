@@ -9,9 +9,17 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Map;
 
-public class HttpUrlConnectionUtil {
+import okhttp3.internal.huc.OkHttpURLConnection;
+import okhttp3.internal.huc.OkHttpsURLConnection;
 
-    public static HttpURLConnection exec(Request request) throws AppException {
+
+/**
+ * Created by ZhangChao on 2016/9/23.
+ */
+
+public class OkHttpUrlConnectionUtil {
+
+    public static OkHttpURLConnection exec(Request request) throws AppException {
 
         if(!URLUtil.isNetworkUrl(request.url))
         {
@@ -23,32 +31,31 @@ public class HttpUrlConnectionUtil {
                 return get(request);
 
             case POST:
-                 return post(request);
+                return post(request);
         }
         return null;
     }
 
-    public static HttpURLConnection get(Request request) throws AppException{
+    public static OkHttpURLConnection get(Request request) throws AppException{
         try {
             request.checkIsCancle();
-            HttpURLConnection connection= (HttpURLConnection) new URL(request.url).openConnection();
+            OkHttpURLConnection connection= (OkHttpURLConnection) new URL(request.url).openConnection();
             connection.setRequestMethod(request.method.name());
             connection.setConnectTimeout(15*3000);
             connection.setReadTimeout(15*3000);
-            addHeader(connection,request.headers);
             request.checkIsCancle();
             return connection;
         }catch (InterruptedIOException e){
             throw new AppException(AppException.ErrorType.TIMEOUT,e.getMessage());
         } catch (IOException e) {
-           throw new AppException(AppException.ErrorType.IO,e.getMessage());
+            throw new AppException(AppException.ErrorType.IO,e.getMessage());
         }
     }
 
-    public static HttpURLConnection post(Request request) throws AppException{
+    public static OkHttpURLConnection post(Request request) throws AppException{
         try {
             request.checkIsCancle();
-            HttpURLConnection connection= (HttpURLConnection) new URL(request.url).openConnection();
+            OkHttpURLConnection connection= (OkHttpURLConnection) new URL(request.url).openConnection();
             connection.setRequestMethod(request.method.name());
             connection.setConnectTimeout(15*3000);
             connection.setReadTimeout(15*3000);
@@ -78,7 +85,7 @@ public class HttpUrlConnectionUtil {
         }
     }
 
-    public static void addHeader( HttpURLConnection connection,Map <String,String> headers)
+    public static void addHeader(OkHttpURLConnection connection, Map <String,String> headers)
     {
         if (headers==null||headers.size()==0)
             return;
