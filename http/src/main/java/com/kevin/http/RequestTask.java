@@ -23,7 +23,7 @@ public class RequestTask extends MyAsyncTask {
         if (this.request.iCallback!=null)
         {
             Object o=request.iCallback.onPreRequest();
-            preRequest(o);
+//            preRequest(o);
             if (o!=null)
             {
 //                preRequestListener.perRequest(o);
