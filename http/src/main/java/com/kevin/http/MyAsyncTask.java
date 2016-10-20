@@ -689,7 +689,7 @@ public abstract class MyAsyncTask<Params, Progress, Result> {
                     result.mTask.onProgressUpdate(result.mData);
                     break;
                 case MESSEAGE_PRE_REQUEST:
-                    result.mTask.onPreUpdate();
+                    result.mTask.onPreUpdate(result.mData);
                     break;
             }
         }

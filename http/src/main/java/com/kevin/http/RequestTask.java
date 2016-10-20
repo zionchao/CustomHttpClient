@@ -1,12 +1,6 @@
 package com.kevin.http;
 
-import android.util.Log;
-import android.widget.Toast;
-
 import java.net.HttpURLConnection;
-import java.util.Objects;
-
-import static android.icu.lang.UCharacter.GraphemeClusterBreak.T;
 
 /**
  * Created by ZhangChao on 2016/9/18.
@@ -42,7 +36,7 @@ public class RequestTask extends MyAsyncTask {
 
     @Override
     protected void onPreUpdate(Object[] values) {
-        request.iCallback.refreshUI();
+        request.iCallback.refreshUI(values[0]);
     }
 
     public Object request(int retryTime)
